@@ -11,6 +11,7 @@ using CommandAPI.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
+using AutoMapper;
 
 
 namespace CommandAPI
@@ -31,12 +32,15 @@ namespace CommandAPI
                 Configuration.GetConnectionString("SqlServerConnection");
                 builder.UserID = Configuration["User Id"];
                 builder.Password = Configuration["Password"];
+                
                 services.AddDbContext<CommandContext>(opt => opt.UseSqlServer
                 (builder.ConnectionString));
                 
                 services.AddControllers();
 
                 //services.AddScoped<ICommandAPIRepo,MockCommandAPIRepo>();
+
+                services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
                 services.AddScoped<ICommandAPIRepo,SqlCommandAPIRepo>();
         }

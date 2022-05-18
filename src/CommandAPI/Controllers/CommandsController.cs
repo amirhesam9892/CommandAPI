@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using CommandAPI.Data;
 using CommandAPI.Models;
+using AutoMapper;
+using CommandAPI.Dtos;
 
 namespace CommandAPI.AddControllers
 {
@@ -11,27 +13,30 @@ namespace CommandAPI.AddControllers
     public class CommandsController : ControllerBase
     {
         private readonly ICommandAPIRepo _repository;
-        public CommandsController(ICommandAPIRepo repository)
+        private readonly IMapper _mapper;
+        public CommandsController(ICommandAPIRepo repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Command>> GetAllCommands()
+        public ActionResult<IEnumerable<CommandReadDto>> GetAllCommands()
         {
             //return new string[] {"this","is","hard","code"};
             var commandItems = _repository.GetAllCommands();
-            return Ok(commandItems);
+            return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commandItems));
         }
         [HttpGet("{id}")]
-        public ActionResult<Command> GetCommandById(int id)
+        public ActionResult<CommandReadDto> GetCommandById(int id)
         {
             var commandItem = _repository.GetCommandById(id);
             if(commandItem == null )
             {
                 return NotFound();
             }
-            return Ok(commandItem);
+            return Ok(_mapper.Map<CommandReadDto>(commandItem));
+            
         }
     }
 }
